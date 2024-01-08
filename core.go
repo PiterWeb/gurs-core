@@ -1,4 +1,4 @@
-package main
+package gurs_core
 
 import (
 	"github.com/PiterWeb/gurs-core/parser"

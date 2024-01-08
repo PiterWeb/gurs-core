@@ -1,14 +1,14 @@
-package main
+package testing
 
 import (
 	"testing"
 
-	"github.com/PiterWeb/gurs-core/parser"
+	gurs_core "github.com/PiterWeb/gurs-core"
 )
 
 func Test_Main(t *testing.T) {
 
-	rustFunctions := parser.GetFunctions([]string{
+	rustFunctions := gurs_core.GetFunctions([]string{
 		"./test_file.rs",
 	})
 

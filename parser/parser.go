@@ -36,6 +36,8 @@ func GetFunctions(filePaths []string) []Rustfn {
 
 		go func(path string) {
 
+			defer wg.Done()
+
 			functionSignatures := parseRustFile(path)
 
 			for _, signature := range functionSignatures {
@@ -49,8 +51,6 @@ func GetFunctions(filePaths []string) []Rustfn {
 				functions = append(functions, *fnStruct)
 
 			}
-
-			wg.Done()
 
 		}(path)
 
