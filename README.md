@@ -1,26 +1,31 @@
-### gurs-core
+# gurs-core
 
-Librería para usar código de rust en tus proyectos de golang
-(esta pensada para ser usada por una cli que funcione en windows/linux/osx):
+### 🏴 Languages
 
-- Usando https://wazero.io/ [Se necesita compilar a Webassembly]
+- [Español](/README-es.md)
+- [Русский](/README-ru.md)
+- [Galego](/README-gl.md)
 
-- Usando DLL / SO / LYB (Librerías dependientes de sistema, que se pueden cargar sin paquete) [Se necesita usar comandos de rustc]
-(Crear Rust DLL)
+## 🤯 What is gurs-core ?
+
+Library for using rust code in your golang projects
+(intended to be used by a cli running on windows/linux/osx):
+
+- Using https://wazero.io/ [Needs to compile to Webassembly].
+
+- Using DLL / SO / LYB (System Dependent Libraries, which can be loaded without a package) [Requires using rustc commands].
+(Create Rust DLL)
 https://samrambles.com/guides/window-hacking-with-rust/creating-a-dll-with-rust/index.html#hellodll
-(Cargar DLL go // Posible Opción)
+(Load DLL go // Possible Option)
 https://github.com/ebitengine/purego
 
-- Usando CGo:
-(Compilar Rust a librería de C y generar .h) https://github.com/mozilla/cbindgen
-[Ejemplo de uso] https://github.com/getsentry/milksnake
+- Using CGo:
+(Compile Rust to C library and generate .h) https://github.com/mozilla/cbindgen
+[Example of use] https://github.com/getsentry/milksnake
 
-###
+Use text/template to have a template with golang code that will be embedded in the build of the package
+and that at runtime will substitute the necessary values to make it run according to the options chosen later in the cli
 
-Utilizar text/template para tener unas template con código de golang que se embeberan en la build del paquete
-y que en tiempo de ejecución se sustituiran los valores necesarios para que corra según las opciones escogidas posteriormente en el cli
-
-Más Documentación:
+More Documentation:
 
 - Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
-
