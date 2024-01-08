@@ -31,3 +31,4 @@ and that at runtime will substitute the necessary values to make it run accordin
 More Documentation:
 
 - Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
+- Rust struct methods with C: https://stackoverflow.com/questions/54156498/how-to-call-a-rust-structs-method-from-c-using-ffi
