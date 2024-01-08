@@ -1,3 +1,4 @@
+// gurs-core sub-package that parses: files / functions (fn) / needed structs
 package parser
 
 import (
@@ -5,7 +6,7 @@ import (
 	"sync"
 )
 
-func convertRustFnToStruct(rustFunction string) *Rustfn {
+func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 
 	fnName := strings.Split(rustFunction, `fn`)
 
@@ -19,8 +20,15 @@ func convertRustFnToStruct(rustFunction string) *Rustfn {
 		return nil
 	}
 
+	fileName := strings.Split(filePath, ".rs")
+
+	if len(fnName) != 2 {
+		return nil
+	}
+
 	return &Rustfn{
-		name: fnName[0],
+		name:     fnName[0],
+		fileName: fileName[0],
 	}
 }
 
@@ -42,7 +50,7 @@ func GetFunctions(filePaths []string) []Rustfn {
 
 			for _, signature := range functionSignatures {
 
-				fnStruct := convertRustFnToStruct(signature)
+				fnStruct := convertRustFnToStruct(path, signature)
 
 				if fnStruct == nil {
 					continue

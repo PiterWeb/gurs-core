@@ -1,6 +1,7 @@
 package parser
 
 type Rustfn struct {
+	fileName   string
 	name       string
 	parameters []parameter
 	returnType string
@@ -9,6 +10,10 @@ type Rustfn struct {
 type parameter struct {
 	name      string
 	valueType string
+}
+
+func (f Rustfn) GetFileName() string {
+	return f.fileName
 }
 
 func (f Rustfn) GetName() string {
