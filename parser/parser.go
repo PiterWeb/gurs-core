@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-func convertRustFnToStruct(rustFunction string) *rustfn {
+func convertRustFnToStruct(rustFunction string) *Rustfn {
 
 	fnName := strings.Split(rustFunction, `fn`)
 
@@ -19,16 +19,16 @@ func convertRustFnToStruct(rustFunction string) *rustfn {
 		return nil
 	}
 
-	return &rustfn{
+	return &Rustfn{
 		name: fnName[0],
 	}
 }
 
-func GetFunctions(filePaths []string) []rustfn {
+func GetFunctions(filePaths []string) []Rustfn {
 
 	var wg sync.WaitGroup
 
-	functions := []rustfn{}
+	functions := []Rustfn{}
 
 	for _, path := range filePaths {
 

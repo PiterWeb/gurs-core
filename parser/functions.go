@@ -1,6 +1,6 @@
 package parser
 
-type rustfn struct {
+type Rustfn struct {
 	name       string
 	parameters []parameter
 	returnType string
@@ -11,15 +11,15 @@ type parameter struct {
 	valueType string
 }
 
-func (f rustfn) GetName() string {
+func (f Rustfn) GetName() string {
 	return f.name
 }
 
-func (f rustfn) GetParameters() []parameter {
+func (f Rustfn) GetParameters() []parameter {
 	return f.parameters
 }
 
-func (f rustfn) GetReturnType() string {
+func (f Rustfn) GetReturnType() string {
 	return f.returnType
 }
 
