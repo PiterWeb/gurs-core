@@ -2,6 +2,7 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -26,9 +27,35 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 		return nil
 	}
 
+	stringParameters := strings.Split(fnName[1], ")")
+
+	if len(stringParameters) < 1 {
+		return nil
+	}
+
+	stringParameters = strings.Split(stringParameters[0], ",")
+
+	parameters := []parameter{}
+
+	for i := range stringParameters {
+
+		// Trim Spaces & then split by spaces to get name and type of param
+		parameterValues := strings.Split(strings.TrimSpace(stringParameters[i]), " ")
+
+		if len(parameterValues) == 2 {
+
+			parameters = append(parameters, parameter{
+				name:      parameterValues[0],
+				valueType: parameterValues[1],
+			})
+		}
+
+	}
+
 	return &Rustfn{
-		name:     fnName[0],
-		fileName: fileName[0],
+		name:       fnName[0],
+		fileName:   fileName[0],
+		parameters: parameters,
 	}
 }
 
@@ -53,6 +80,7 @@ func GetFunctions(filePaths []string) []Rustfn {
 				fnStruct := convertRustFnToStruct(path, signature)
 
 				if fnStruct == nil {
+					fmt.Printf("An error ocurred during fn parsing for : %s", signature)
 					continue
 				}
 
