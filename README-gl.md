@@ -1,4 +1,5 @@
 # gurs-core
+[![Go Reference](https://pkg.go.dev/badge/github.com/PiterWeb/gurs-core.svg)](https://pkg.go.dev/github.com/PiterWeb/gurs-core)
 
 ## 🤯 ¿Qué é gurs-core?
 
@@ -23,4 +24,6 @@ e que en tempo de execución se sustituiran os valores necesarios para que corra
 Máis Documentación:
 
 - Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
+- Rust struct methods with C: https://stackoverflow.com/questions/54156498/how-to-call-a-rust-structs-method-from-c-using-ffi
+
 

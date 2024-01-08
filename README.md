@@ -1,4 +1,5 @@
 # gurs-core
+[![Go Reference](https://pkg.go.dev/badge/github.com/PiterWeb/gurs-core.svg)](https://pkg.go.dev/github.com/PiterWeb/gurs-core)
 
 ## 🚧 Still Working on ...
 

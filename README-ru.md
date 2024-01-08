@@ -1,4 +1,5 @@
 # gurs-core
+[![Go Reference](https://pkg.go.dev/badge/github.com/PiterWeb/gurs-core.svg)](https://pkg.go.dev/github.com/PiterWeb/gurs-core)
 
 ## 🤯 Что такое gurs-core ?
 
@@ -22,4 +23,6 @@ https://github.com/ebitengine/purego
 
 Дополнительная документация:
 
-- Rust с C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
+- Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
+- Rust struct methods with C: https://stackoverflow.com/questions/54156498/how-to-call-a-rust-structs-method-from-c-using-ffi
+
