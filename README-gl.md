@@ -2,7 +2,7 @@
 
 ## 🤯 ¿Qué é gurs-core?
 
-Librería para usar código de rust nos teus proxectos de golang
+Librería que fai unha análise de código de rust e crea unha interfaz para usar nos teus proxectos de golang
 (está pensada para ser usada por unha cli que funcione en windows/linux/osx):
 
 - Usando https://wazero.io/ [Necesitase compilar a Webassembly]
