@@ -26,10 +26,6 @@ func parseRustFile(fileName string) []string {
 		fmt.Printf("No exported functions found on file %s\n", fileName)
 	}
 
-	for i, f := range functionMatches {
-		fmt.Println(f, "**", i)
-	}
-
 	return functionMatches
 
 }

@@ -2,6 +2,7 @@ package parser
 
 import (
 	"strings"
+	"sync"
 )
 
 func convertRustFnToStruct(rustFunction string) *rustfn {
@@ -12,28 +13,50 @@ func convertRustFnToStruct(rustFunction string) *rustfn {
 		return nil
 	}
 
+	fnName = strings.Split(fnName[1], "(")
+
+	if len(fnName) != 2 {
+		return nil
+	}
+
 	return &rustfn{
-		name: fnName[1],
+		name: fnName[0],
 	}
 }
 
-func GetFunctions() []rustfn {
+func GetFunctions(filePaths []string) []rustfn {
 
-	functionSignatures := parseRustFile("./parser/test_file.rs")
+	var wg sync.WaitGroup
 
 	functions := []rustfn{}
 
-	for _, signature := range functionSignatures {
+	for _, path := range filePaths {
 
-		fnStruct := convertRustFnToStruct(signature)
+		wg.Add(1)
 
-		if fnStruct == nil {
-			continue
-		}
+		go func(path string) {
 
-		functions = append(functions, *fnStruct)
+			functionSignatures := parseRustFile(path)
+
+			for _, signature := range functionSignatures {
+
+				fnStruct := convertRustFnToStruct(signature)
+
+				if fnStruct == nil {
+					continue
+				}
+
+				functions = append(functions, *fnStruct)
+
+			}
+
+			wg.Done()
+
+		}(path)
 
 	}
+
+	wg.Wait()
 
 	return functions
 
