@@ -1,13 +1,19 @@
 # gurs-core
 [![Go Reference](https://pkg.go.dev/badge/github.com/PiterWeb/gurs-core.svg)](https://pkg.go.dev/github.com/PiterWeb/gurs-core)
 
-## 🚧 Still Working on ...
+## 🚧 Still on development ...
 
 ### 🏴 Languages
 
 - [Español](/README-es.md)
 - [Русский](/README-ru.md)
 - [Galego](/README-gl.md)
+
+## Prerequisites for use:
+
+- Go
+- Cargo
+- CGo (only in project)
 
 ## 🤯 What is gurs-core ?
 
@@ -33,3 +39,10 @@ More Documentation:
 
 - Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
 - Rust struct methods with C: https://stackoverflow.com/questions/54156498/how-to-call-a-rust-structs-method-from-c-using-ffi
+- How to use C libraries in Go with CGo: https://dev.to/metal3d/understand-how-to-use-c-libraries-in-go-with-cgo-3dbn
+
+## OS Support
+
+| Windows 	| Linux 	| MacOS 	| FreeBSD 	|
+|---------	|-------	|-------	|---------	|
+| ✔       	| ✔     	| ✔     	| ❓       	|
