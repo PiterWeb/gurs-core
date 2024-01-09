@@ -1,15 +1,15 @@
 #[no_mangle]
-pub extern "C" fn HelloWorld(adios: Vec<&str>) {
+pub extern "C" fn functionWithVec(adios: Vec<&str>) {
     println!("Hello, world!");
 }
 
 #[no_mangle]
-pub extern "C" fn Caca(xd: str, lol: i32) {
+pub extern "C" fn functionMoreParameters(xd: str, lol: i32) {
     println!(":?", xd);
 }
 
 
 #[no_mangle]
-pub unsafe extern "C" fn UnsafeHelloWorld() -> &str {
+pub unsafe extern "C" fn UnsafeReturn() -> &str {
     "Hello World";
 }

@@ -3,8 +3,9 @@ package gurs_core
 
 import (
 	"github.com/PiterWeb/gurs-core/parser"
-	"github.com/PiterWeb/gurs-core/transpile"
 )
+
+type Gofunc = parser.Gofunc
 
 // GetFunctions parse the files according to the slice of filePaths
 // from the arguments.
@@ -14,7 +15,7 @@ func GetFunctions(filePaths []string) []parser.Rustfn {
 	return parser.GetFunctions(filePaths)
 }
 
-// TranspileTypes gets the rust types and transpiles to golang valid types
-func TranspileTypes(rustTypes []string) []string {
-	return transpile.TranspileTypes(rustTypes)
+// ConvertRsFnSliceToGo gets an slice of RustFn and returns the corresponding transpilation to Gofunc slice
+func ConvertRsFnSliceToGo(fns *[]parser.Rustfn) (goFuncs []Gofunc) {
+	return parser.ConvertRsFnSliceToGo(*fns)
 }

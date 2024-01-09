@@ -28,7 +28,7 @@ func transpilateSlice(rustVec string) string {
 }
 
 // Transpile Rust types to golang valid types
-func transpileType(rustType string) string {
+func TranspileType(rustType string) string {
 
 	isPrimitive := false
 
@@ -76,7 +76,7 @@ func TranspileTypes(rustTypes []string) []string {
 
 	for _, rustType := range rustTypes {
 
-		goType := transpileType(rustType)
+		goType := TranspileType(rustType)
 
 		goTypes = append(goTypes, goType)
 	}

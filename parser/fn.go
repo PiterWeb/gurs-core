@@ -1,6 +1,10 @@
 package parser
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/PiterWeb/gurs-core/transpile"
+)
 
 type Rustfn struct {
 	fileName   string
@@ -8,8 +12,6 @@ type Rustfn struct {
 	parameters []parameter
 	returnType string
 }
-
-type Gofunc Rustfn
 
 type parameter struct {
 	name      string
@@ -49,4 +51,42 @@ func (p parameter) GetName() string {
 
 func (p parameter) GetType() string {
 	return p.valueType
+}
+
+type Gofunc Rustfn
+
+func (fn Rustfn) ConvertToGo() Gofunc {
+
+	convertedParameters := []parameter{}
+
+	for _, p := range fn.GetParameters() {
+
+		convertedParameters = append(convertedParameters, parameter{
+			name:      p.name,
+			valueType: transpile.TranspileType(p.valueType),
+		})
+
+	}
+
+	f := Gofunc{
+		fileName:   fn.fileName,
+		name:       fn.name,
+		parameters: convertedParameters,
+		returnType: transpile.TranspileType(fn.returnType),
+	}
+
+	return f
+
+}
+
+func ConvertRsFnSliceToGo(fns []Rustfn) (goFuncs []Gofunc) {
+
+	for _, r := range fns {
+
+		goFuncs = append(goFuncs, r.ConvertToGo())
+
+	}
+
+	return
+
 }
