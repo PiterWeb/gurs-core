@@ -3,57 +3,50 @@ package parser
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"sync"
 )
 
 func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 
-	fnName := strings.Split(rustFunction, `fn`)
+	fnNameRegex := regexp.MustCompile(`fn\s+([A-Za-z0-9]+)+[\s?]*\(`)
 
-	if len(fnName) != 2 {
-		return nil
-	}
+	fnName := fnNameRegex.FindStringSubmatch(rustFunction)[1]
 
-	fnName = strings.Split(fnName[1], "(")
-
-	if len(fnName) != 2 {
+	if fnName == "" {
 		return nil
 	}
 
 	fileName := strings.Split(filePath, ".rs")
 
-	if len(fnName) != 2 {
+	if len(fileName) != 2 {
 		return nil
 	}
 
-	stringParameters := strings.Split(fnName[1], ")")
+	stringParametersRegex := regexp.MustCompile(`fn\s+[A-Za-z0-9]+[\s?]*\([\s?]*([^)]+)*[\s?]*\)`)
 
-	if len(stringParameters) < 1 {
-		return nil
-	}
-
-	stringParameters = strings.Split(stringParameters[0], ",")
+	stringParameters := strings.Split(stringParametersRegex.FindStringSubmatch(rustFunction)[1], ",")
 
 	parameters := []parameter{}
 
 	for i := range stringParameters {
 
 		// Trim Spaces & then split by spaces to get name and type of param
-		parameterValues := strings.Split(strings.TrimSpace(stringParameters[i]), " ")
+		parameterValues := strings.Split(stringParameters[i], ":")
 
 		if len(parameterValues) == 2 {
 
 			parameters = append(parameters, parameter{
-				name:      parameterValues[0],
-				valueType: parameterValues[1],
+				name:      strings.TrimSpace(parameterValues[0]),
+				valueType: strings.TrimSpace(parameterValues[1]),
 			})
 		}
 
 	}
 
 	return &Rustfn{
-		name:       fnName[0],
+		name:       fnName,
 		fileName:   fileName[0],
 		parameters: parameters,
 	}
@@ -73,14 +66,19 @@ func GetFunctions(filePaths []string) []Rustfn {
 
 			defer wg.Done()
 
-			functionSignatures := parseRustFile(path)
+			functionSignatures, err := parseRustFile(path)
+
+			if err != nil {
+				fmt.Printf("An error ocurred during file parsing for: %s", path)
+				return
+			}
 
 			for _, signature := range functionSignatures {
 
 				fnStruct := convertRustFnToStruct(path, signature)
 
 				if fnStruct == nil {
-					fmt.Printf("An error ocurred during fn parsing for : %s", signature)
+					fmt.Printf("An error ocurred during fn parsing for:	%s::%s", path, signature)
 					continue
 				}
 
