@@ -1,7 +1,8 @@
-# gurs-core
+# Gurs Core
 [![Go Reference](https://pkg.go.dev/badge/github.com/PiterWeb/gurs-core.svg)](https://pkg.go.dev/github.com/PiterWeb/gurs-core)
 
-## 🚧 Still on development ...
+> [!WARNING]  
+> Still on development ... 🚧
 
 ### 🏴 Languages
 
