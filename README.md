@@ -40,6 +40,7 @@ More Documentation:
 - Rust with C: https://docs.rust-embedded.org/book/interoperability/rust-with-c.html#no_mangle
 - Rust struct methods with C: https://stackoverflow.com/questions/54156498/how-to-call-a-rust-structs-method-from-c-using-ffi
 - How to use C libraries in Go with CGo: https://dev.to/metal3d/understand-how-to-use-c-libraries-in-go-with-cgo-3dbn
+- Specify Rust build target: https://doc.rust-lang.org/cargo/reference/config.html#buildtarget
 
 ## OS Support
 
