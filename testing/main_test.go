@@ -8,14 +8,39 @@ import (
 
 func Test_Main(t *testing.T) {
 
-	rustFunctions := gurs_core.GetFunctions([]string{
-		"./test_file.rs",
+	rustFiles, err := gurs_core.ExploreFolder(".")
+	t.Run("Explore Folder", func(t *testing.T) {
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		t.Logf("Founded rust files : %v", rustFiles)
+
 	})
 
-	t.Log(rustFunctions)
+	rustFunctions := gurs_core.GetFunctions(rustFiles)
+
+	t.Run("Parse Rust functions", func(t *testing.T) {
+
+		t.Logf("Rust functions parsed: %v", rustFunctions)
+
+		if len(rustFunctions) != 3 {
+			t.Fatal("Number of parsed rust functions is not correct")
+		}
+
+	})
 
 	goFunctions := gurs_core.ConvertRsFnSliceToGo(&rustFunctions)
 
-	t.Log(goFunctions)
+	t.Run("Transpilation to Golang", func(t *testing.T) {
+
+		t.Logf("Go compatible functions: %v", goFunctions)
+
+		if len(goFunctions) != 3 {
+			t.Logf("Number of Golang functions is not correct ")
+		}
+
+	})
 
 }
