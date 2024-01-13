@@ -1,7 +1,8 @@
-// gurs-core - run rust 🦀 code in your golang projects ✨
+// 🦀 Rust code parser & type-safe interface for Golang. ✨
 package gurs_core
 
 import (
+	"github.com/PiterWeb/gurs-core/explore"
 	"github.com/PiterWeb/gurs-core/parser"
 )
 
@@ -15,7 +16,15 @@ func GetFunctions(filePaths []string) []parser.Rustfn {
 	return parser.GetFunctions(filePaths)
 }
 
-// ConvertRsFnSliceToGo gets an slice of RustFn and returns the corresponding transpilation to Gofunc slice
+// ConvertRsFnSliceToGo gets an slice of RustFn and returns the corresponding transpilation to Gofunc slice.
+// For individual implementation is a Rustfn struct method  (Rustfn -> Gofunc)
 func ConvertRsFnSliceToGo(fns *[]parser.Rustfn) (goFuncs []Gofunc) {
 	return parser.ConvertRsFnSliceToGo(*fns)
+}
+
+// ExploreFolder gets the rootFolder path and returns the filePath of all the .rs files located on the folder
+func ExploreFolder(folderPath string) ([]string, error) {
+
+	return explore.ExploreFolder(folderPath)
+
 }
