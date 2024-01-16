@@ -45,10 +45,17 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 
 	}
 
+	returnTypeRegex := regexp.MustCompile(`fn\s+[A-Za-z0-9]+[\s?]*\([\s?]*[^)]*[\s?]*\)[\s?]*-?>?[\s?]*([^)]+?)\s{?`)
+	returnType := returnTypeRegex.FindStringSubmatch(rustFunction)[1]
+
+	// If no return type regex catch the '{' so we replace it with a blank space
+	returnType = strings.ReplaceAll(returnType, "{", "")
+
 	return &Rustfn{
 		name:       fnName,
 		fileName:   fileName[0],
 		parameters: parameters,
+		returnType: returnType,
 	}
 }
 

@@ -17,7 +17,7 @@ func parseRustFile(fileName string) ([]string, error) {
 		return nil, err
 	}
 
-	regexFunctionsFirm := regexp.MustCompile(`#\[no_mangle\]\s+pub\s+u?n?s?a?f?e?[\s?]*extern\s+"C"\s+fn\s+[A-Za-z0-9]+[\s?]*\([^)]*\)`)
+	regexFunctionsFirm := regexp.MustCompile(`#\[no_mangle\]\s+pub\s+u?n?s?a?f?e?[\s?]*extern\s+"C"\s+fn\s+[A-Za-z0-9]+[\s?]*\([^)]*\)*[\s?]*-?>?[\s?]*[^)]+?\s`)
 	// #\[no_mangle\]\s+pub\s+u?n?s?a?f?e?[\s?]*extern\s+"C"\s+fn\s+[A-Za-z0-9]+\([^)]*\).*[\s?]*-?>?[\s?]*&?[A-Za-z0-9]+.*$
 
 	functionMatches := regexFunctionsFirm.FindAllString(string(rustFile), -1)
