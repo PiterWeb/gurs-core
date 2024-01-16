@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"os"
 	"testing"
 
 	gurs_core "github.com/PiterWeb/gurs-core"
@@ -49,6 +50,20 @@ func Test_Main(t *testing.T) {
 
 		if len(goFunctions) != GO_COMPATIBLE_FUNCTIONS {
 			t.Fatalf("Number of Golang functions is not correct: %d/%d", len(goFunctions), GO_COMPATIBLE_FUNCTIONS)
+		}
+
+	})
+
+	t.Run("Generate Go Templates", func(t *testing.T) {
+
+		for _, fn := range goFunctions {
+			templ, err := fn.ToStringTemplate()
+
+			if err != nil {
+				t.Fatalf(err.Error())
+			}
+
+			templ.Execute(os.Stdout, "// Body template")
 		}
 
 	})

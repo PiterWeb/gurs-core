@@ -2,46 +2,50 @@ package parser
 
 import (
 	"fmt"
+	"strings"
+	"text/template"
 
 	"github.com/PiterWeb/gurs-core/transpile"
 )
 
-type Rustfn struct {
+type baseFunction struct {
 	fileName   string
 	name       string
 	parameters []parameter
 	returnType string
 }
 
+type Rustfn baseFunction
+
 type parameter struct {
 	name      string
 	valueType string
 }
 
-func (f Rustfn) GetFileName() string {
+func (f baseFunction) GetFileName() string {
 	return f.fileName
 }
 
-func (f Rustfn) GetName() string {
+func (f baseFunction) GetName() string {
 	return f.name
 }
 
-func (f Rustfn) GetParameters() []parameter {
+func (f baseFunction) GetParameters() []parameter {
 	return f.parameters
 }
 
-func (f Rustfn) GetRawParameters() []string {
+func (f baseFunction) GetRawParameters() []string {
 
 	rawParameters := []string{}
 
 	for _, p := range f.parameters {
-		rawParameters = append(rawParameters, fmt.Sprintf("%s %s", p.name, p.valueType))
+		rawParameters = append(rawParameters, fmt.Sprintf("%s: %s", p.name, p.valueType))
 	}
 
 	return rawParameters
 }
 
-func (f Rustfn) GetReturnType() string {
+func (f baseFunction) GetReturnType() string {
 	return f.returnType
 }
 
@@ -53,13 +57,13 @@ func (p parameter) GetType() string {
 	return p.valueType
 }
 
-type Gofunc Rustfn
+type Gofunc baseFunction
 
 func (fn Rustfn) ConvertToGo() Gofunc {
 
 	convertedParameters := []parameter{}
 
-	for _, p := range fn.GetParameters() {
+	for _, p := range baseFunction(fn).GetParameters() {
 
 		convertedParameters = append(convertedParameters, parameter{
 			name:      p.name,
@@ -76,6 +80,24 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 	}
 
 	return f
+
+}
+
+func (fn Gofunc) ToStringTemplate() (*template.Template, error) {
+
+	templ := template.New("func-" + fn.name)
+
+	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
+
+	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", fn.name, parameters, fn.returnType)
+
+	templ, err := templ.Parse(textTemplate)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return templ, nil
 
 }
 
