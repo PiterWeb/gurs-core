@@ -89,7 +89,10 @@ func (fn Gofunc) ToStringTemplate() (*template.Template, error) {
 
 	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
 
-	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", fn.name, parameters, fn.returnType)
+	// Capitalize the word to make the function public
+	publicFunctionName := strings.ToUpper(string(fn.name[0])) + fn.name[1:]
+
+	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", publicFunctionName, parameters, fn.returnType)
 
 	templ, err := templ.Parse(textTemplate)
 
