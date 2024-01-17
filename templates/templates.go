@@ -2,25 +2,30 @@ package templates
 
 import (
 	_ "embed"
+	"text/template"
 )
 
-//go:embed cgo.go.txt
+//go:embed cgo.go.template
 var cgoTemplate []byte
 
-//go:embed dll.go.txt
-var dllTemplate []byte
-
-//go:embed wazero.go.txt
+//go:embed wazero.go.template
 var wazeroTemplate []byte
 
-func Cgo() string {
-	return string(cgoTemplate)
+//go:embed wazero_runtime.go.template
+var wazeroRuntime []byte
+
+// Cgo template (text/template)
+func Cgo() (*template.Template, error) {
+
+	return template.New("Cgo").Parse(string(cgoTemplate))
 }
 
-func Dll() string {
-	return string(dllTemplate)
+// Wazero template (text/template)
+func Wazero() (*template.Template, error) {
+	return template.New("Wazero").Parse(string(wazeroTemplate))
 }
 
-func Wazero() string {
-	return string(wazeroTemplate)
+// Wazero runtime file (no need to edit so is a string)
+func WazeroRuntime() string {
+	return string(wazeroRuntime)
 }

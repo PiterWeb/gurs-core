@@ -1,0 +1,9 @@
+// File generated with gurs ({{.GursVersion}})
+
+package {{.Package}}
+
+import "{{.Wazero_Runtime}}"
+
+{{range .Functions}}
+    {{.Wazero}}
+{{end}}
