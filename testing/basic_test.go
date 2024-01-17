@@ -13,7 +13,7 @@ const (
 	GO_COMPATIBLE_FUNCTIONS = 3
 )
 
-func Test_Main(t *testing.T) {
+func Test_Basic(t *testing.T) {
 
 	rustFiles, err := gurs_core.ExploreFolder(".")
 	t.Run("Explore Folder", func(t *testing.T) {
