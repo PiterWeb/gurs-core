@@ -1,7 +1,7 @@
 package testing
 
 import (
-	"slices"
+	"reflect"
 	"testing"
 
 	gurs_core "github.com/PiterWeb/gurs-core"
@@ -27,10 +27,8 @@ func TestExploreFolder(t *testing.T) {
 		t.Fatalf("Number of found rust files is not correct %d/%d", len(rustFiles), RUST_FILES)
 	}
 
-	for _, fn := range rustFiles {
-		if b := slices.Contains(getMockRustFileNames(), fn); !b {
-			t.Fatalf("Rust file (%s) not found in %v", fn, getMockRustFileNames())
-		}
+	if !reflect.DeepEqual(getMockRustFileNames(), rustFiles) {
+		t.Fatalf("The expected result (%s) is not equal to the actual: (%s)", getMockRustFileNames(), rustFiles)
 	}
 
 }

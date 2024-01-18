@@ -9,52 +9,52 @@ import (
 )
 
 type baseFunction struct {
-	fileName   string
-	name       string
-	parameters []parameter
-	returnType string
+	FileName   string      `json:"fileName"`
+	Name       string      `json:"name"`
+	Parameters []parameter `json:"parameters"`
+	ReturnType string      `json:"returnType"`
+}
+
+type parameter struct {
+	Name      string `json:"name"`
+	ValueType string `json:"valueType"`
 }
 
 type Rustfn baseFunction
 
-type parameter struct {
-	name      string
-	valueType string
-}
-
 func (f baseFunction) GetFileName() string {
-	return f.fileName
+	return f.FileName
 }
 
 func (f baseFunction) GetName() string {
-	return f.name
+	return f.Name
 }
 
 func (f baseFunction) GetParameters() []parameter {
-	return f.parameters
+	return f.Parameters
 }
 
 func (f baseFunction) GetRawParameters() []string {
 
 	rawParameters := []string{}
 
-	for _, p := range f.parameters {
-		rawParameters = append(rawParameters, fmt.Sprintf("%s: %s", p.name, p.valueType))
+	for _, p := range f.Parameters {
+		rawParameters = append(rawParameters, fmt.Sprintf("%s: %s", p.Name, p.ValueType))
 	}
 
 	return rawParameters
 }
 
 func (f baseFunction) GetReturnType() string {
-	return f.returnType
+	return f.ReturnType
 }
 
 func (p parameter) GetName() string {
-	return p.name
+	return p.Name
 }
 
 func (p parameter) GetType() string {
-	return p.valueType
+	return p.ValueType
 }
 
 type Gofunc baseFunction
@@ -66,17 +66,20 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 	for _, p := range baseFunction(fn).GetParameters() {
 
 		convertedParameters = append(convertedParameters, parameter{
-			name:      p.name,
-			valueType: transpile.TranspileType(p.valueType),
+			Name:      p.Name,
+			ValueType: transpile.TranspileType(p.ValueType),
 		})
 
 	}
 
+	// Capitalize the word to make the function public
+	publicFunctionName := strings.ToUpper(string(fn.Name[0])) + fn.Name[1:]
+
 	f := Gofunc{
-		fileName:   fn.fileName,
-		name:       fn.name,
-		parameters: convertedParameters,
-		returnType: transpile.TranspileType(fn.returnType),
+		FileName:   fn.FileName,
+		Name:       publicFunctionName,
+		Parameters: convertedParameters,
+		ReturnType: transpile.TranspileType(fn.ReturnType),
 	}
 
 	return f
@@ -85,14 +88,11 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 
 func (fn Gofunc) ToStringTemplate() (*template.Template, error) {
 
-	templ := template.New("func-" + fn.name)
+	templ := template.New("func-" + fn.Name)
 
 	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
 
-	// Capitalize the word to make the function public
-	publicFunctionName := strings.ToUpper(string(fn.name[0])) + fn.name[1:]
-
-	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", publicFunctionName, parameters, fn.returnType)
+	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", fn.FileName, parameters, fn.ReturnType)
 
 	templ, err := templ.Parse(textTemplate)
 

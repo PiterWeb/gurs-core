@@ -7,12 +7,6 @@ import (
 	gurs_core "github.com/PiterWeb/gurs-core"
 )
 
-const (
-	RUST_FILES              = 1
-	RUST_FUNCTIONS          = 3
-	GO_COMPATIBLE_FUNCTIONS = 3
-)
-
 func TestWorkflow(t *testing.T) {
 
 	rustFiles, err := gurs_core.ExploreFolder(".")
@@ -34,7 +28,7 @@ func TestWorkflow(t *testing.T) {
 
 	t.Run("Parse Rust functions", func(t *testing.T) {
 
-		t.Logf("Rust functions parsed: %v", rustFunctions)
+		t.Logf("Rust functions parsed (%d): \n %s", len(rustFunctions), rustFunctions)
 
 		if len(rustFunctions) != RUST_FUNCTIONS {
 			t.Fatalf("Number of parsed rust functions is not correct %d/%d", len(rustFunctions), RUST_FUNCTIONS)
@@ -46,7 +40,7 @@ func TestWorkflow(t *testing.T) {
 
 	t.Run("Transpilation to Golang", func(t *testing.T) {
 
-		t.Logf("Go compatible functions: %v", goFunctions)
+		t.Logf("Go compatible functions (%d):  \n %s", len(goFunctions), goFunctions)
 
 		if len(goFunctions) != GO_COMPATIBLE_FUNCTIONS {
 			t.Fatalf("Number of Golang functions is not correct: %d/%d", len(goFunctions), GO_COMPATIBLE_FUNCTIONS)

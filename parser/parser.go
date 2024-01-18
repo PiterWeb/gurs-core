@@ -38,8 +38,8 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 		if len(parameterValues) == 2 {
 
 			parameters = append(parameters, parameter{
-				name:      strings.TrimSpace(parameterValues[0]),
-				valueType: strings.TrimSpace(parameterValues[1]),
+				Name:      strings.TrimSpace(parameterValues[0]),
+				ValueType: strings.TrimSpace(parameterValues[1]),
 			})
 		}
 
@@ -52,10 +52,10 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 	returnType = strings.ReplaceAll(returnType, "{", "")
 
 	return &Rustfn{
-		name:       fnName,
-		fileName:   fileName[0],
-		parameters: parameters,
-		returnType: returnType,
+		Name:       fnName,
+		FileName:   fileName[0],
+		Parameters: parameters,
+		ReturnType: returnType,
 	}
 }
 
