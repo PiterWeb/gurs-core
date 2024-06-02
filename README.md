@@ -14,7 +14,7 @@
 
 - Go
 - Cargo
-- CGo (only in project)
+- CGo (only in project, not for the library)
 
 ## 🤯 What is gurs-core ?
 
