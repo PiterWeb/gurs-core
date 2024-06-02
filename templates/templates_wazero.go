@@ -5,10 +5,10 @@ import (
 	"text/template"
 )
 
-//go:embed wazero.go.template
+//go:embed wazero.go.tpl
 var wazeroTemplate []byte
 
-//go:embed wazero_runtime.go.template
+//go:embed wazero_runtime.go.tpl
 var wazeroRuntime []byte
 
 // Wazero template (text/template)

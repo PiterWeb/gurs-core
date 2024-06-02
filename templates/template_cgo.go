@@ -2,14 +2,33 @@ package templates
 
 import (
 	_ "embed"
+	"strings"
 	"text/template"
+
+	"github.com/PiterWeb/gurs-core/parser"
 )
 
-//go:embed cgo.go.template
+type CgoTemplate struct {
+	Functions   []parser.Gofunc
+	Package     string
+	GursVersion string
+}
+
+//go:embed cgo.go.tpl
 var cgoTemplate []byte
 
 // Cgo template (text/template)
 func Cgo() (*template.Template, error) {
 
-	return template.New("Cgo").Parse(string(cgoTemplate))
+	funcsMap := template.FuncMap{
+		"ReplaceFnBody": ReplaceFnBody,
+	}
+
+	return template.New("Cgo").Funcs(funcsMap).Parse(string(cgoTemplate))
+}
+
+func ReplaceFnBody(fn string, body string) string {
+
+	return strings.Replace(fn, "{{.}}", body, 1)
+
 }

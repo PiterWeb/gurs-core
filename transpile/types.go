@@ -2,6 +2,7 @@ package transpile
 
 import "strings"
 
+// common types in rust and their golang equivalents
 var transpilationTypes = map[string]string{
 	"i8":           "int8",
 	"i16":          "int16",
@@ -27,7 +28,7 @@ func transpilateSlice(rustVec string) string {
 
 }
 
-// Transpile Rust types to golang valid types
+// Transpile Rust type to golang valid type
 func TranspileType(rustType string) string {
 
 	isPrimitive := false
@@ -36,10 +37,12 @@ func TranspileType(rustType string) string {
 
 	for transpilationType, goEquivalentType := range transpilationTypes {
 
+		// If type not match on this iteration
 		if !strings.Contains(rustType, transpilationType) {
 			continue
 		}
 
+		// Borrowed type
 		borrowedTranspilationType := "&" + transpilationType
 
 		isPrimitive = true
@@ -70,6 +73,7 @@ func TranspileType(rustType string) string {
 
 }
 
+// Transpile array of rust types to golang valid types
 func TranspileTypes(rustTypes []string) []string {
 
 	goTypes := []string{}

@@ -2,25 +2,32 @@ package testing
 
 import (
 	"encoding/json"
+	"os"
 
 	"github.com/PiterWeb/gurs-core/parser"
 )
 
 const (
 	RUST_FILES              = 1
-	RUST_FUNCTIONS          = 3
-	GO_COMPATIBLE_FUNCTIONS = 3
+	RUST_FUNCTIONS          = 4
+	GO_COMPATIBLE_FUNCTIONS = 4
 )
 
-const MOCK_RUST_FN = `[{"fileName":"rust\\basic_c_test","name":"paramVec","parameters":[{"name":"adios","valueType":"Vec\u003c\u0026str\u003e"}],"returnType":""},{"fileName":"rust\\basic_c_test","name":"twoParams","parameters":[{"name":"xd","valueType":"str"},{"name":"lol","valueType":"i32"}],"returnType":""},{"fileName":"rust\\basic_c_test","name":"unsafeReturn","parameters":[],"returnType":"\u0026str"}]`
+const MOCK_RUST_FN_FILE = "./assets/parse_fn_rust.json"
 
-const MOCK_GO_FN = `[{"fileName":"rust\\basic_c_test","name":"ParamVec","parameters":[{"name":"adios","valueType":"[]string"}],"returnType":""},{"fileName":"rust\\basic_c_test","name":"TwoParams","parameters":[{"name":"xd","valueType":"string"},{"name":"lol","valueType":"int32"}],"returnType":""},{"fileName":"rust\\basic_c_test","name":"UnsafeReturn","parameters":[],"returnType":"string"}]`
+const MOCK_GO_FN_FILE = "./assets/parse_fn_go.json"
 
 func getMockRustFunctions() []parser.Rustfn {
 
 	rustFn := new([]parser.Rustfn)
 
-	json.Unmarshal([]byte(MOCK_RUST_FN), rustFn)
+	MOCK_RUST_FN, err := os.ReadFile(MOCK_RUST_FN_FILE)
+
+	if err != nil {
+		panic(err)
+	}
+
+	json.Unmarshal(MOCK_RUST_FN, rustFn)
 
 	return *rustFn
 
@@ -30,7 +37,13 @@ func getMockGoFunctions() []parser.Gofunc {
 
 	goFn := new([]parser.Gofunc)
 
-	json.Unmarshal([]byte(MOCK_GO_FN), goFn)
+	MOCK_GO_FN, err := os.ReadFile(MOCK_GO_FN_FILE)
+
+	if err != nil {
+		panic(err)
+	}
+
+	json.Unmarshal(MOCK_GO_FN, goFn)
 
 	return *goFn
 

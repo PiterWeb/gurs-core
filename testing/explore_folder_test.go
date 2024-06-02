@@ -9,13 +9,13 @@ import (
 
 func getMockRustFileNames() []string {
 	return []string{
-		`rust\basic_test.rs`,
+		`assets\basic_c_test.rs`,
 	}
 }
 
 func TestExploreFolder(t *testing.T) {
 
-	rustFiles, err := gurs_core.ExploreFolder("./rust")
+	rustFiles, err := gurs_core.ExploreFolder("./assets")
 
 	if err != nil {
 		t.Fatal(err)

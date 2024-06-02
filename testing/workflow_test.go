@@ -51,7 +51,7 @@ func TestWorkflow(t *testing.T) {
 	t.Run("Generate Go Templates", func(t *testing.T) {
 
 		for _, fn := range goFunctions {
-			templ, err := fn.ToStringTemplate()
+			templ, err := fn.ToTemplate()
 
 			if err != nil {
 				t.Fatalf(err.Error())

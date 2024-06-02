@@ -39,7 +39,7 @@ func (f baseFunction) GetRawParameters() []string {
 	rawParameters := []string{}
 
 	for _, p := range f.Parameters {
-		rawParameters = append(rawParameters, fmt.Sprintf("%s: %s", p.Name, p.ValueType))
+		rawParameters = append(rawParameters, fmt.Sprintf("%s %s", p.Name, p.ValueType))
 	}
 
 	return rawParameters
@@ -86,13 +86,11 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 
 }
 
-func (fn Gofunc) ToStringTemplate() (*template.Template, error) {
+func (fn Gofunc) ToTemplate() (*template.Template, error) {
 
 	templ := template.New("func-" + fn.Name)
 
-	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
-
-	textTemplate := fmt.Sprintf("func %s(%s) %s {\n {{.}} \n}\n", fn.FileName, parameters, fn.ReturnType)
+	textTemplate := fn.ToString()
 
 	templ, err := templ.Parse(textTemplate)
 
@@ -103,6 +101,37 @@ func (fn Gofunc) ToStringTemplate() (*template.Template, error) {
 	return templ, nil
 
 }
+
+func (fn Gofunc) ToString() string {
+
+	// Convert the parameters to a string
+	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
+
+	// Replace the colon with a space
+	parameters = strings.ReplaceAll(parameters, ":", " ")
+
+	textTemplate := fmt.Sprintf("func %s(%s) %s {{{.}}}\n", fn.Name, parameters, fn.ReturnType)
+
+	return textTemplate
+}
+
+// func (fn Gofunc) CGo() string {
+
+// 	params := [][]string{}
+
+// 	for _, fullParam := range baseFunction(fn).GetRawParameters() {
+
+// 		param := strings.Split(fullParam, " ")
+
+// 		params = append(params, param)
+
+// 	}
+
+// 	transpiled := transpile.Cgo(fn.Name, fn.ReturnType, params)
+
+// 	return transpiled
+
+// }
 
 func ConvertRsFnSliceToGo(fns []Rustfn) (goFuncs []Gofunc) {
 

@@ -4,7 +4,12 @@ pub extern "C" fn paramVec(adios: Vec<&str>) {
 }
 
 #[no_mangle]
-pub extern "C" fn twoParams(xd: str, lol: i32) {
+pub extern "C" fn otherParamVec(adios: Vec<i32>) {
+    println!("lel");
+}
+
+#[no_mangle]
+pub extern "C" fn twoParams(xd: str, _lol: i32) {
     println!(":?", xd);
 }
 

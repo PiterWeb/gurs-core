@@ -1,4 +1,5 @@
-// File generated with gurs ({{.GursVersion}})
+// File automatically generated with gurs ({{.GursVersion}})
+// modify it at your own risk
 
 package wazero_runtime
 

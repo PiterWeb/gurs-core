@@ -1,6 +1,8 @@
 package testing
 
 import (
+	"encoding/json"
+	"os"
 	"reflect"
 	"testing"
 
@@ -20,5 +22,21 @@ func TestParseFn(t *testing.T) {
 	if !reflect.DeepEqual(getMockRustFunctions(), rustFunctions) {
 		t.Fatalf("The expected result (%s) is not equal to the actual: (%v)", getMockRustFunctions(), rustFunctions)
 	}
+
+	f, err := os.Create("./out/parse_fn.json")
+
+	if err != nil {
+		t.Fatalf("Error creating file: %v", err)
+	}
+
+	defer f.Close()
+
+	rsFnData, err := json.Marshal(rustFunctions)
+
+	if err != nil {
+		t.Fatalf("Error marshalling data: %v", err)
+	}
+
+	f.Write(rsFnData)
 
 }
