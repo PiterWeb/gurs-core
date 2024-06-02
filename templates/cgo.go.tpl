@@ -3,14 +3,17 @@
 
 package {{.Package}}
 
+// #cgo CFLAGS: -g -Wall
+// #include <stdlib.h>
 // #include "{{.Package}}.h"
 import "C"
 
 {{range .Functions}}
 
-    {{ReplaceFnBody .ToString `
-        // This is a placeholder for the function body
-        
-    `}}
+    {{$varNames := GetVariableNames .}}
+    {{$fnCall := printf "return C.%s(%v)" .Name $varNames}}
+    {{$varDeclarations := CreateVariables .}}
+
+    {{ReplaceFnBody .ToString $varDeclarations $fnCall}}
 
 {{end}}
