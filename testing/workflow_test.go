@@ -9,7 +9,7 @@ import (
 
 func TestWorkflow(t *testing.T) {
 
-	rustFiles, err := gurs_core.ExploreFolder(".")
+	rustFiles, err := gurs_core.ExploreFolder("./assets")
 	t.Run("Explore Folder", func(t *testing.T) {
 
 		if err != nil {

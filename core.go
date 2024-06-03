@@ -2,11 +2,22 @@
 package gurs_core
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/PiterWeb/gurs-core/explore"
 	"github.com/PiterWeb/gurs-core/parser"
+	"github.com/PiterWeb/gurs-core/templates"
 )
 
+const GURS_VERSION = "0.1.0"
+
 type Gofunc = parser.GoFn
+
+type ExecuteOptions struct {
+	Destination string
+	Pkg         string
+}
 
 // GetFunctions parse the files according to the slice of filePaths
 // from the arguments.
@@ -26,5 +37,27 @@ func ConvertRsFnSliceToGo(fns *[]parser.RustFn) (goFuncs []Gofunc) {
 func ExploreFolder(folderPath string) ([]string, error) {
 
 	return explore.ExploreFolder(folderPath)
+
+}
+
+func CGo(goFuncs []Gofunc, options ExecuteOptions) {
+
+	cgoTemp, err := templates.Cgo()
+
+	if err != nil {
+		panic(err)
+	}
+
+	outputFile, err := os.Create(filepath.Join(options.Destination, options.Pkg+".go"))
+
+	if err != nil {
+		panic(err)
+	}
+
+	cgoTemp.Execute(outputFile, templates.CgoTemplate{
+		Functions:   goFuncs,
+		Package:     options.Pkg,
+		GursVersion: GURS_VERSION,
+	})
 
 }
