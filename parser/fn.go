@@ -5,69 +5,57 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/PiterWeb/gurs-core/functions"
 	"github.com/PiterWeb/gurs-core/transpile"
 )
 
-type baseFunction struct {
-	FileName   string      `json:"fileName"`
-	Name       string      `json:"name"`
-	Parameters []parameter `json:"parameters"`
-	ReturnType string      `json:"returnType"`
+type baseFn struct {
+	FileName   string                `json:"fileName"`
+	Name       string                `json:"name"`
+	Parameters []functions.Parameter `json:"parameters"`
+	ReturnType string                `json:"returnType"`
 }
 
-type parameter struct {
-	Name      string `json:"name"`
-	ValueType string `json:"valueType"`
-}
+type RustFn baseFn
 
-type Rustfn baseFunction
-
-func (f baseFunction) GetFileName() string {
+func (f baseFn) GetFileName() string {
 	return f.FileName
 }
 
-func (f baseFunction) GetName() string {
+func (f baseFn) GetName() string {
 	return f.Name
 }
 
-func (f baseFunction) GetParameters() []parameter {
+func (f baseFn) GetParameters() []functions.Parameter {
 	return f.Parameters
 }
 
-func (f baseFunction) GetRawParameters() []string {
+func (f baseFn) GetRawParameters() []string {
 
 	rawParameters := []string{}
 
 	for _, p := range f.Parameters {
-		rawParameters = append(rawParameters, fmt.Sprintf("%s %s", p.Name, p.ValueType))
+		rawParameters = append(rawParameters, fmt.Sprintf("%s %s", p.GetName(), p.GetType()))
 	}
 
 	return rawParameters
 }
 
-func (f baseFunction) GetReturnType() string {
+func (f baseFn) GetReturnType() string {
 	return f.ReturnType
 }
 
-func (p parameter) GetName() string {
-	return p.Name
-}
+type GoFn baseFn
 
-func (p parameter) GetType() string {
-	return p.ValueType
-}
+func (fn RustFn) ConvertToGo() GoFn {
 
-type Gofunc baseFunction
+	convertedParameters := []functions.Parameter{}
 
-func (fn Rustfn) ConvertToGo() Gofunc {
+	for _, p := range baseFn(fn).GetParameters() {
 
-	convertedParameters := []parameter{}
-
-	for _, p := range baseFunction(fn).GetParameters() {
-
-		convertedParameters = append(convertedParameters, parameter{
-			Name:      p.Name,
-			ValueType: transpile.TranspileType(p.ValueType),
+		convertedParameters = append(convertedParameters, functions.Parameter{
+			Name:      p.GetName(),
+			ValueType: transpile.TranspileType(p.GetType()),
 		})
 
 	}
@@ -75,7 +63,7 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 	// Capitalize the word to make the function public
 	publicFunctionName := strings.ToUpper(string(fn.Name[0])) + fn.Name[1:]
 
-	f := Gofunc{
+	f := GoFn{
 		FileName:   fn.FileName,
 		Name:       publicFunctionName,
 		Parameters: convertedParameters,
@@ -86,11 +74,19 @@ func (fn Rustfn) ConvertToGo() Gofunc {
 
 }
 
-func (fn Gofunc) ToTemplate() (*template.Template, error) {
+func (fn GoFn) ToTemplate() (*template.Template, error) {
 
 	templ := template.New("func-" + fn.Name)
 
-	textTemplate := fn.ToString()
+	// Convert the parameters to a string
+	parameters := strings.Join(baseFn(fn).GetRawParameters(), ", ")
+
+	// Replace the colon with a space
+	parameters = strings.ReplaceAll(parameters, ":", " ")
+
+	textTemplate := fmt.Sprintf("func %s(%s) %s { {{.}} }\n", fn.Name, parameters, fn.ReturnType)
+
+	fmt.Println("textTemplate: ", textTemplate)
 
 	templ, err := templ.Parse(textTemplate)
 
@@ -102,38 +98,14 @@ func (fn Gofunc) ToTemplate() (*template.Template, error) {
 
 }
 
-func (fn Gofunc) ToString() string {
+func (fn GoFn) ToCGo() string {
 
-	// Convert the parameters to a string
-	parameters := strings.Join(baseFunction(fn).GetRawParameters(), ", ")
+	baseFn := baseFn(fn)
 
-	// Replace the colon with a space
-	parameters = strings.ReplaceAll(parameters, ":", " ")
-
-	textTemplate := fmt.Sprintf("func %s(%s) %s {{{.}}}\n", fn.Name, parameters, fn.ReturnType)
-
-	return textTemplate
+	return transpile.GoFuncSignatureToCGo(baseFn)
 }
 
-// func (fn Gofunc) CGo() string {
-
-// 	params := [][]string{}
-
-// 	for _, fullParam := range baseFunction(fn).GetRawParameters() {
-
-// 		param := strings.Split(fullParam, " ")
-
-// 		params = append(params, param)
-
-// 	}
-
-// 	transpiled := transpile.Cgo(fn.Name, fn.ReturnType, params)
-
-// 	return transpiled
-
-// }
-
-func ConvertRsFnSliceToGo(fns []Rustfn) (goFuncs []Gofunc) {
+func ConvertRsFnSliceToGo(fns []RustFn) (goFuncs []GoFn) {
 
 	for _, r := range fns {
 

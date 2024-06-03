@@ -6,9 +6,11 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/PiterWeb/gurs-core/functions"
 )
 
-func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
+func convertRustFnToStruct(filePath string, rustFunction string) *RustFn {
 
 	fnNameRegex := regexp.MustCompile(`fn\s+([A-Za-z0-9]+)+[\s?]*\(`)
 
@@ -28,7 +30,7 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 
 	stringParameters := strings.Split(stringParametersRegex.FindStringSubmatch(rustFunction)[1], ",")
 
-	parameters := []parameter{}
+	parameters := []functions.Parameter{}
 
 	for i := range stringParameters {
 
@@ -37,7 +39,7 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 
 		if len(parameterValues) == 2 {
 
-			parameters = append(parameters, parameter{
+			parameters = append(parameters, functions.Parameter{
 				Name:      strings.TrimSpace(parameterValues[0]),
 				ValueType: strings.TrimSpace(parameterValues[1]),
 			})
@@ -51,7 +53,7 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 	// If no return type regex catch the '{' so we replace it with a blank space
 	returnType = strings.ReplaceAll(returnType, "{", "")
 
-	return &Rustfn{
+	return &RustFn{
 		Name:       fnName,
 		FileName:   fileName[0],
 		Parameters: parameters,
@@ -59,11 +61,11 @@ func convertRustFnToStruct(filePath string, rustFunction string) *Rustfn {
 	}
 }
 
-func GetFunctions(filePaths []string) []Rustfn {
+func GetFunctions(filePaths []string) []RustFn {
 
 	var wg sync.WaitGroup
 
-	functions := []Rustfn{}
+	functions := []RustFn{}
 
 	for _, path := range filePaths {
 

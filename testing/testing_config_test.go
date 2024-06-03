@@ -17,9 +17,9 @@ const MOCK_RUST_FN_FILE = "./assets/parse_fn_rust.json"
 
 const MOCK_GO_FN_FILE = "./assets/parse_fn_go.json"
 
-func getMockRustFunctions() []parser.Rustfn {
+func getMockRustFunctions() []parser.RustFn {
 
-	rustFn := new([]parser.Rustfn)
+	rustFn := new([]parser.RustFn)
 
 	MOCK_RUST_FN, err := os.ReadFile(MOCK_RUST_FN_FILE)
 
@@ -33,9 +33,9 @@ func getMockRustFunctions() []parser.Rustfn {
 
 }
 
-func getMockGoFunctions() []parser.Gofunc {
+func getMockGoFunctions() []parser.GoFn {
 
-	goFn := new([]parser.Gofunc)
+	goFn := new([]parser.GoFn)
 
 	MOCK_GO_FN, err := os.ReadFile(MOCK_GO_FN_FILE)
 

@@ -10,10 +10,6 @@ import "C"
 
 {{range .Functions}}
 
-    {{$varNames := GetVariableNames .}}
-    {{$fnCall := printf "return C.%s(%v)" .Name $varNames}}
-    {{$varDeclarations := CreateVariables .}}
-
-    {{ReplaceFnBody .ToString $varDeclarations $fnCall}}
+    {{.ToCGo}}
 
 {{end}}
