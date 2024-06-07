@@ -16,23 +16,31 @@ type _ICGoFunc interface {
 	GetParameters() []functions.Parameter
 }
 
-var goToCGoTypes = map[string]string{
-	"string":  "C.CString",
-	"byte":    "C.uchar",   // Unsigned char for byte
-	"rune":    "C.int32_t", // Rune is a Unicode code point, equivalent to int32
+var goToCGoArgTypes = map[string]string{
+	"string":  "*C.char",
+	"byte":    "C.uchar", // Unsigned char for byte
+	"rune":    "C.int",   // Rune is a Unicode code point, equivalent to int32
 	"int":     "C.int",
-	"int8":    "C.int8_t",
-	"int16":   "C.int16_t",
-	"int32":   "C.int32_t",
-	"int64":   "C.int64_t",
+	"int8":    "C.schar",
+	"int16":   "C.short",
+	"int32":   "C.int",
+	"int64":   "C.slong",
 	"uint":    "C.uint",
-	"uint8":   "C.uint8_t",
-	"uint16":  "C.uint16_t",
-	"uint32":  "C.uint32_t",
-	"uint64":  "C.uint64_t",
+	"uint8":   "C.uchar",
+	"uint16":  "C.ushort",
+	"uint32":  "C.uint",
+	"uint64":  "C.ulong",
 	"float32": "C.float",
 	"float64": "C.double",
-	"bool":    "C._Bool", // bool in Go corresponds to _Bool in C
+	"bool":    "C.bool", // bool in Go corresponds to _Bool in C
+}
+
+var conversionFunctionsGoToCGo = map[string]string{
+	"string": "C.CString",
+}
+
+var conversionFunctionsCGoToGo = map[string]string{
+	"string": "C.GoString",
 }
 
 func goTypeToCGoType(goType string) string {
@@ -40,12 +48,15 @@ func goTypeToCGoType(goType string) string {
 	arrayRegex := regexp.MustCompile(`\[(.*?)\](.*)`)
 
 	matches := arrayRegex.FindStringSubmatch(goType)
+
+	// Check if it's an array type
 	if len(matches) == 3 {
 		size := matches[1] // array size, could be empty for slices
 		baseType := strings.TrimSpace(matches[2])
-		cgoBaseType, ok := goToCGoTypes[baseType]
+		cgoBaseType, ok := goToCGoArgTypes[baseType]
 		if !ok {
-			return "unknown"
+			// If the base type is not found, return interface{} (any type in Cgo)
+			return "interface{}"
 		}
 		if size == "" {
 			return fmt.Sprintf("*%s", cgoBaseType) // for slices, use pointer type
@@ -54,9 +65,10 @@ func goTypeToCGoType(goType string) string {
 	}
 
 	// Not an array type, directly map the base type
-	cgoBaseType, ok := goToCGoTypes[goType]
+	cgoBaseType, ok := goToCGoArgTypes[goType]
 	if !ok {
-		return "unknown"
+		// If the base type is not found, return interface{} (any type in Cgo)
+		return "interface{}"
 	}
 	return cgoBaseType
 }
@@ -71,7 +83,9 @@ func GoFuncSignatureToCGo(fn _ICGoFunc) string {
 	// Replace the colon with a space
 	parameters = strings.ReplaceAll(parameters, ":", " ")
 
-	textTemplate := fmt.Sprintf("func %s(%s) %s { {{.}} }\n", fn.GetName(), parameters, fn.GetReturnType())
+	returnTypeToCGo := goTypeToCGoType(fn.GetReturnType())
+
+	textTemplate := fmt.Sprintf("func %s(%s) %s { {{.}} }\n", fn.GetName(), parameters, returnTypeToCGo)
 
 	fmt.Println("textTemplate: ", textTemplate)
 
@@ -115,9 +129,36 @@ func getCGoVariables(fn _ICGoFunc) string {
 	variables := "\n"
 
 	for _, p := range fn.GetParameters() {
-		cgo_type := goTypeToCGoType(p.GetType())
+
+		cgo_conversion, ok := conversionFunctionsGoToCGo[p.GetType()]
+
+		if !ok {
+
+			if strings.Contains(p.GetType(), "[]") {
+
+				string_slice := strings.Split(p.GetType(), "[]")
+
+				pure_type := string_slice[len(string_slice)-1]
+
+				cgo_conversion, ok = conversionFunctionsGoToCGo[pure_type]
+
+				if !ok {
+					// If the conversion function is not found, use the default conversion
+					cgo_conversion = goTypeToCGoType(p.GetType())
+				} else {
+					// If it's a slice, use a pointer type
+					cgo_conversion = fmt.Sprintf("*%s", cgo_conversion)
+				}
+
+			} else {
+				// If the conversion function is not found, use the default conversion
+				cgo_conversion = goTypeToCGoType(p.GetType())
+			}
+
+		}
+
 		arg_name := p.GetName()
-		variables += fmt.Sprintf("c_%s := %s(%s)\n", arg_name, cgo_type, arg_name)
+		variables += fmt.Sprintf("c_%s := %s(%s)\n", arg_name, cgo_conversion, arg_name)
 	}
 
 	return variables
