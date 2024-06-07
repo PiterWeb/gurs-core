@@ -18,7 +18,7 @@
 
 ## 🤯 What is gurs-core ?
 
-Library that parses rust code & create an interface to use on your golang projects
+Library that parses rust code & create an interface to use on your golang projects without external dependencies
 (intended to be used by a cli running on windows/linux/osx):
 
 - Using https://wazero.io/ [Needs to compile to Webassembly].
